@@ -285,6 +285,25 @@ npm run db:studio
 
 ## 🚀 Deployment
 
+### **⚠️ Important: WebSocket Deployment Considerations**
+
+**Vercel does NOT support WebSockets** due to its serverless nature. For this Socket.IO backend, use:
+
+### **Recommended Platforms for WebSocket Support**
+- **🚂 Railway** - Best for full-stack apps with WebSockets
+- **🎨 Render** - Excellent WebSocket support, easy setup
+- **🌊 DigitalOcean** - App Platform with container support
+- **🚀 Fly.io** - Modern platform with persistent connections
+- **☁️ AWS EC2** - Traditional server hosting
+
+### **Hybrid Deployment Strategy (Recommended)**
+```
+Frontend (Next.js) → Vercel
+Backend (Socket.IO) → Railway/Render
+Database → PlanetScale/AWS RDS
+Redis → Redis Cloud
+```
+
 ### Environment Variables for Production
 ```env
 DATABASE_URL="mysql://user:pass@host:port/database"
@@ -292,6 +311,7 @@ REDIS_URL="redis://user:pass@host:port"
 PORT=5000
 NODE_ENV=production
 JWT_SECRET=your-production-secret-key
+FRONTEND_URL=https://your-frontend-domain.vercel.app
 ```
 
 ### Build and Deploy
@@ -299,6 +319,46 @@ JWT_SECRET=your-production-secret-key
 npm run build
 npm run start
 ```
+
+### **Railway Deployment (Recommended)**
+
+**Step-by-step deployment:**
+
+1. **Install Railway CLI:**
+```bash
+npm install -g @railway/cli
+```
+
+2. **Login and initialize:**
+```bash
+railway login
+railway init
+```
+
+3. **Set environment variables in Railway dashboard:**
+```env
+DATABASE_URL=mysql://your-database-url
+REDIS_URL=redis://your-redis-url
+PORT=5000
+NODE_ENV=production
+JWT_SECRET=your-production-secret
+FRONTEND_URL=https://your-frontend.vercel.app
+```
+
+4. **Deploy:**
+```bash
+railway up
+```
+
+5. **Your backend will be available at:** `https://your-app.railway.app`
+
+**Why Railway?**
+- ✅ **Native WebSocket support** (unlike Vercel)
+- ✅ **Zero config deployment** from GitHub
+- ✅ **Automatic HTTPS** and custom domains
+- ✅ **Environment variable management**
+- ✅ **Affordable pricing** (~$5/month)
+- ✅ **Excellent developer experience**
 
 ## 🐛 Troubleshooting
 

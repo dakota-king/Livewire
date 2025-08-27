@@ -360,10 +360,12 @@ NEXT_PUBLIC_SERVER_URL=https://your-api-domain.com
 ```
 
 ### **Deployment Platforms**
-- **Vercel** (Recommended for Next.js)
-- **Netlify**
-- **AWS Amplify**
-- **Docker** with nginx
+- **Vercel** (✅ Perfect for Next.js frontend)
+- **Netlify** (✅ Good alternative for static sites)
+- **AWS Amplify** (✅ Full AWS integration)
+- **Docker** with nginx (✅ Self-hosted option)
+
+**⚠️ Important**: This frontend connects to a **WebSocket backend** that **cannot** be deployed on Vercel. Deploy the backend on Railway/Render and update the environment variables accordingly.
 
 ## 🐛 Troubleshooting
 

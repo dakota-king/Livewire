@@ -9,6 +9,8 @@
 [![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)](https://prisma.io/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
+> **⚠️ Deployment Note**: This app uses **WebSockets** for real-time features. The backend **cannot** be deployed on Vercel (serverless). Use **Railway**, **Render**, or similar platforms for the backend, while the frontend works perfectly on Vercel.
+
 ## ✨ Features
 
 ### 🚀 **Real-time Communication**
@@ -90,12 +92,14 @@ Visit **http://localhost:3000** to start chatting! 🎉
 
 ## 🛠️ Tech Stack
 
-| Layer | Technologies |
-|-------|-------------|
-| **Frontend** | Next.js 14, TypeScript, Tailwind CSS, Socket.IO Client |
-| **Backend** | Express.js, TypeScript, Socket.IO, Prisma ORM |
-| **Database** | MySQL 8.0, Redis 6.x |
-| **Infrastructure** | Docker, Docker Compose |
+| Layer | Technologies | Deployment |
+|-------|-------------|------------|
+| **Frontend** | Next.js 14, TypeScript, Tailwind CSS, Socket.IO Client | Vercel ✅ |
+| **Backend** | Express.js, TypeScript, Socket.IO, Prisma ORM | Railway/Render 🚂 |
+| **Database** | MySQL 8.0, Redis 6.x | PlanetScale/Redis Cloud ☁️ |
+| **Infrastructure** | Docker, Docker Compose | Development Only 🔧 |
+
+**Note**: Backend uses WebSockets, so it **cannot** be deployed on Vercel (serverless).
 
 ## 📁 Project Structure
 
@@ -170,10 +174,82 @@ docker-compose down      # Stop services
 
 ## 🚀 Deployment
 
-Ready for production deployment on platforms like:
-- **Frontend**: Vercel, Netlify, AWS Amplify
-- **Backend**: Railway, Render, DigitalOcean
+### **⚠️ Important: WebSocket Deployment Considerations**
+
+**Vercel does NOT support WebSockets** due to its serverless nature. Use a **hybrid deployment strategy**:
+
+### **Recommended Deployment Strategy**
+```
+Frontend (Next.js)  →  Vercel ✅ (Perfect for React/Next.js)
+Backend (Socket.IO)  →  Railway 🚂 (Excellent WebSocket support)
+Database (MySQL)     →  PlanetScale 🗄️ (Serverless MySQL)
+Cache (Redis)        →  Redis Cloud ☁️ (Managed Redis)
+```
+
+### **Platform Options**
+- **Frontend**: Vercel ✅, Netlify, AWS Amplify
+- **Backend**: Railway 🚂, Render 🎨, DigitalOcean 🌊, Fly.io 🚀
 - **Database**: PlanetScale, AWS RDS, Google Cloud SQL
+- **Redis**: Redis Cloud, AWS ElastiCache
+
+### **Quick Deploy Commands**
+```bash
+# Frontend to Vercel
+cd frontend && npx vercel
+
+# Backend to Railway (install CLI first)
+npm install -g @railway/cli
+cd backend && railway login && railway up
+```
+
+### **Environment Variables for Production**
+
+**Frontend (.env.local):**
+```env
+NEXT_PUBLIC_API_URL=https://your-backend.railway.app/api
+NEXT_PUBLIC_SERVER_URL=https://your-backend.railway.app
+```
+
+**Backend (Railway/Render):**
+```env
+DATABASE_URL=mysql://user:pass@host:port/database
+REDIS_URL=redis://user:pass@host:port
+PORT=5000
+NODE_ENV=production
+JWT_SECRET=your-production-secret-key
+FRONTEND_URL=https://your-app.vercel.app
+```
+
+### **Cost Estimate**
+- **Frontend (Vercel)**: Free tier available
+- **Backend (Railway)**: ~$5/month hobby tier
+- **Database (PlanetScale)**: Free tier available
+- **Redis (Redis Cloud)**: Free tier available
+- **Total**: ~$5/month for production deployment
+
+## 🔍 Troubleshooting
+
+### **❌ WebSocket Deployment Issues**
+**Problem**: "WebSocket connection failed" in production
+- **Cause**: Backend deployed on Vercel (serverless doesn't support WebSockets)
+- **Solution**: Deploy backend on Railway, Render, or DigitalOcean
+
+### **❌ Development Issues**
+**Connection Refused Errors:**
+```bash
+docker-compose ps          # Check services
+docker-compose restart     # Restart if needed
+```
+
+**Database Issues:**
+```bash
+npm run db:generate        # Regenerate Prisma client
+npm run db:push           # Sync schema
+```
+
+**CORS Errors in Production:**
+- Update `FRONTEND_URL` in backend environment variables
+- Ensure URLs match exactly (no trailing slashes)
 
 ## 📄 License
 
