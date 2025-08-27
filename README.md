@@ -179,10 +179,6 @@ Ready for production deployment on platforms like:
 
 This project is licensed under the ISC License.
 
----
-
-**🎯 Built as a take-home assignment showcasing modern full-stack real-time development**
-
 For detailed documentation, see:
 - [Backend README](./backend/README.md)
 - [Frontend README](./frontend/README.md)
