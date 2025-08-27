@@ -1,373 +1,358 @@
-# Livewire Chat Backend
+# 🔥 Livewire Chat Backend
 
-A real-time chat application backend built with Express.js, Socket.IO, Prisma, MySQL, and Redis.
+> **High-performance real-time chat server built with Express.js, Socket.IO, Prisma, and Redis**
 
-## Features
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)](https://expressjs.com/)
+[![Socket.IO](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)](https://socket.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)](https://prisma.io/)
+[![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 
-- **Real-time messaging** with Socket.IO
-- **Room-based chat** system
-- **User presence tracking** and online status
-- **Message persistence** with MySQL database
-- **Redis caching** for session management and rate limiting
-- **Typing indicators** for enhanced user experience
-- **RESTful API** for room and message management
-- **Rate limiting** to prevent spam
-- **Graceful error handling** and connection recovery
+## ✨ Features
 
-## Tech Stack
+### 🚀 **Real-time Communication**
+- **WebSocket connections** with Socket.IO for instant messaging
+- **Room-based chat system** with automatic user presence tracking
+- **Typing indicators** with real-time broadcast to room members
+- **Connection status management** with graceful reconnection handling
 
-- **Node.js** & **TypeScript**
-- **Express.js** - Web framework
-- **Socket.IO** - Real-time bidirectional communication
-- **Prisma** - Database ORM
-- **MySQL** - Database
-- **Redis** - Caching and session management
-- **Cors** - Cross-origin resource sharing
+### 🗄️ **Data Management**
+- **MySQL database** with Prisma ORM for robust data persistence
+- **Redis caching** for session management and real-time data
+- **Message history** with efficient pagination
+- **User presence tracking** with automatic cleanup
 
-## Prerequisites
+### 🛡️ **Security & Performance**
+- **Rate limiting** (30 messages/minute per user)
+- **Input validation** and sanitization
+- **CORS configuration** for secure cross-origin requests
+- **Environment variable protection**
+- **SQL injection prevention** with Prisma ORM
 
-Before running the application, make sure you have:
+### 🔧 **Developer Experience**
+- **TypeScript** for type safety and better development experience
+- **Hot reload** with nodemon for rapid development
+- **Comprehensive error handling** with detailed logging
+- **RESTful API** design with clear endpoint structure
 
-- Node.js (v16 or higher)
-- MySQL database server
-- Redis server
-- npm or yarn package manager
+## 🏗️ Architecture
 
-## Installation
-
-1. **Clone the repository and navigate to backend directory**
-   ```bash
-   cd backend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   
-   Copy the `.env` file and update the values:
-   ```bash
-   # Database
-   DATABASE_URL="mysql://username:password@localhost:3306/livewire_chat"
-   
-   # Redis
-   REDIS_URL="redis://localhost:6379"
-   
-   # Server
-   PORT=5000
-   NODE_ENV=development
-   
-   # JWT (for future authentication)
-   JWT_SECRET=your-super-secret-jwt-key-here
-   ```
-
-4. **Set up the database**
-   ```bash
-   # Generate Prisma client
-   npm run db:generate
-   
-   # Create and apply migrations
-   npm run db:migrate
-   
-   # Or push schema directly (for development)
-   npm run db:push
-   ```
-
-5. **Start Redis server**
-   
-   Make sure Redis is running on your system:
-   ```bash
-   redis-server
-   ```
-
-## Usage
-
-### Development
-```bash
-npm run dev
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend       │    │   Database      │
+│   (Next.js)     │◄──►│   (Express.js)  │◄──►│   (MySQL)       │
+│                 │    │                 │    │                 │
+│ Socket.IO Client│    │ Socket.IO Server│    │ Prisma ORM      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                              │
+                              ▼
+                       ┌─────────────────┐
+                       │     Redis       │
+                       │   (Caching)     │
+                       └─────────────────┘
 ```
 
-### Production
+## 📋 Prerequisites
+
+- **Node.js** 16.x or higher
+- **MySQL** 8.0 or higher
+- **Redis** 6.x or higher
+- **npm** or **yarn**
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
 ```bash
-npm run build
-npm start
+npm install
 ```
 
-### Database Management
+### 2. Environment Setup
+Create a `.env` file in the backend directory:
+
+```env
+# Database Configuration
+DATABASE_URL="mysql://username:password@localhost:3306/livewire_chat"
+
+# Redis Configuration  
+REDIS_URL="redis://localhost:6379"
+
+# Server Configuration
+PORT=5000
+NODE_ENV=development
+
+# Security
+JWT_SECRET=your-super-secret-jwt-key-here
+```
+
+### 3. Database Setup
 ```bash
 # Generate Prisma client
 npm run db:generate
 
-# Create and apply migration
-npm run db:migrate
-
-# Push schema changes (development)
+# Push schema to database
 npm run db:push
 
-# Open Prisma Studio
+# Optional: Open Prisma Studio
 npm run db:studio
 ```
 
-## API Endpoints
-
-### Rooms
-
-#### GET /api/rooms
-Get all chat rooms with metadata.
-
-**Response:**
-```json
-[
-  {
-    "id": "room_id",
-    "name": "General Chat",
-    "description": "Main discussion room",
-    "createdAt": "2024-01-01T00:00:00.000Z",
-    "updatedAt": "2024-01-01T00:00:00.000Z",
-    "onlineCount": 5,
-    "lastMessage": {
-      "content": "Hello everyone!",
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "username": "john_doe"
-    }
-  }
-]
+### 4. Start Development Server
+```bash
+npm run dev
 ```
 
-#### POST /api/rooms
-Create a new chat room.
+The server will start on `http://localhost:5000` 🚀
 
-**Request Body:**
-```json
-{
-  "name": "New Room",
-  "description": "Optional description"
-}
+## 📡 API Documentation
+
+### 🌐 REST Endpoints
+
+| Method | Endpoint | Description | Response |
+|--------|----------|-------------|----------|
+| `GET` | `/api/health` | Health check | `{ status: "OK", timestamp: "..." }` |
+| `GET` | `/api/rooms` | Get all chat rooms | `Room[]` with metadata |
+| `POST` | `/api/rooms` | Create new room | `Room` object |
+| `GET` | `/api/rooms/:id/messages` | Get room messages | Paginated `Message[]` |
+| `GET` | `/api/rooms/:id/users` | Get online users | `User[]` in room |
+
+### 🔌 WebSocket Events
+
+#### **Client → Server**
+```typescript
+// Join a chat room
+socket.emit('join-room', { roomId: string, username: string })
+
+// Leave current room
+socket.emit('leave-room', {})
+
+// Send a message
+socket.emit('send-message', { roomId: string, content: string, username: string })
+
+// Typing indicators
+socket.emit('typing-start', { roomId: string, username: string })
+socket.emit('typing-stop', { roomId: string, username: string })
 ```
 
-**Response:**
-```json
-{
-  "id": "new_room_id",
-  "name": "New Room",
-  "description": "Optional description",
-  "createdAt": "2024-01-01T00:00:00.000Z",
-  "updatedAt": "2024-01-01T00:00:00.000Z"
-}
+#### **Server → Client**
+```typescript
+// New message received
+socket.on('message-received', (message: Message) => {})
+
+// User presence updates
+socket.on('user-joined', ({ username: string, roomId: string }) => {})
+socket.on('user-left', ({ username: string, roomId: string }) => {})
+
+// Typing updates
+socket.on('typing-update', ({ username: string, isTyping: boolean }) => {})
+
+// Room updates
+socket.on('room-users-updated', (users: User[]) => {})
+
+// Error handling
+socket.on('error', ({ message: string }) => {})
 ```
 
-#### GET /api/rooms/:id/messages
-Get message history for a specific room.
+## 🗃️ Database Schema
 
-**Query Parameters:**
-- `page` (optional): Page number (default: 1)
-- `limit` (optional): Messages per page (default: 50)
-
-**Response:**
-```json
-{
-  "messages": [
-    {
-      "id": "message_id",
-      "content": "Hello!",
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "user": {
-        "username": "john_doe"
-      }
-    }
-  ],
-  "page": 1,
-  "hasMore": false
-}
+### **Users**
+```sql
+CREATE TABLE users (
+  id VARCHAR(191) PRIMARY KEY,
+  username VARCHAR(191) UNIQUE NOT NULL,
+  lastSeen DATETIME DEFAULT CURRENT_TIMESTAMP,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 ```
 
-#### GET /api/rooms/:id/users
-Get online users in a specific room.
-
-**Response:**
-```json
-[
-  {
-    "id": "user_id",
-    "username": "john_doe",
-    "lastSeen": "2024-01-01T00:00:00.000Z"
-  }
-]
+### **Rooms**
+```sql
+CREATE TABLE rooms (
+  id VARCHAR(191) PRIMARY KEY,
+  name VARCHAR(191) UNIQUE NOT NULL,
+  description TEXT,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 ```
 
-## WebSocket Events
-
-### Client to Server Events
-
-#### join-room
-Join a chat room.
-```javascript
-socket.emit('join-room', {
-  roomId: 'room_id',
-  username: 'john_doe'
-});
+### **Messages**
+```sql
+CREATE TABLE messages (
+  id VARCHAR(191) PRIMARY KEY,
+  content TEXT NOT NULL,
+  userId VARCHAR(191) NOT NULL,
+  roomId VARCHAR(191) NOT NULL,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (roomId) REFERENCES rooms(id) ON DELETE CASCADE,
+  INDEX idx_room_created (roomId, createdAt)
+);
 ```
 
-#### leave-room
-Leave the current room.
-```javascript
-socket.emit('leave-room', {
-  roomId: 'room_id'
-});
+### **UserRooms** (Junction Table)
+```sql
+CREATE TABLE user_rooms (
+  id VARCHAR(191) PRIMARY KEY,
+  userId VARCHAR(191) NOT NULL,
+  roomId VARCHAR(191) NOT NULL,
+  joinedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (roomId) REFERENCES rooms(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_user_room (userId, roomId)
+);
 ```
 
-#### send-message
-Send a message to the current room.
-```javascript
-socket.emit('send-message', {
-  roomId: 'room_id',
-  content: 'Hello everyone!',
-  username: 'john_doe'
-});
-```
-
-#### typing-start / typing-stop
-Indicate typing status.
-```javascript
-socket.emit('typing-start', {
-  roomId: 'room_id',
-  username: 'john_doe',
-  isTyping: true
-});
-```
-
-### Server to Client Events
-
-#### message-received
-Receive a new message.
-```javascript
-socket.on('message-received', (message) => {
-  console.log('New message:', message);
-});
-```
-
-#### user-joined / user-left
-User presence updates.
-```javascript
-socket.on('user-joined', ({ username, roomId }) => {
-  console.log(`${username} joined ${roomId}`);
-});
-```
-
-#### typing-update
-Typing indicator updates.
-```javascript
-socket.on('typing-update', ({ username, isTyping }) => {
-  console.log(`${username} is ${isTyping ? 'typing' : 'not typing'}`);
-});
-```
-
-#### room-users-updated
-Updated list of online users.
-```javascript
-socket.on('room-users-updated', (users) => {
-  console.log('Online users:', users);
-});
-```
-
-#### error
-Error messages.
-```javascript
-socket.on('error', ({ message }) => {
-  console.error('Socket error:', message);
-});
-```
-
-## Database Schema
-
-### Users
-- `id` - Unique identifier (CUID)
-- `username` - Unique username
-- `lastSeen` - Last activity timestamp
-- `createdAt` - Account creation date
-- `updatedAt` - Last update timestamp
-
-### Rooms
-- `id` - Unique identifier (CUID)
-- `name` - Unique room name
-- `description` - Optional room description
-- `createdAt` - Room creation date
-- `updatedAt` - Last activity timestamp
-
-### Messages
-- `id` - Unique identifier (CUID)
-- `content` - Message text content
-- `userId` - Foreign key to Users
-- `roomId` - Foreign key to Rooms
-- `createdAt` - Message timestamp
-
-### UserRooms
-- `id` - Unique identifier (CUID)
-- `userId` - Foreign key to Users
-- `roomId` - Foreign key to Rooms
-- `joinedAt` - When user joined the room
-
-## Redis Usage
-
-### Session Management
-- `user:{socketId}` - User session data
-- `room:{roomId}:users` - Set of online users in room
-
-### Caching
-- `room:{roomId}:recent_messages` - Cache of recent messages (last 50)
-
-### Rate Limiting
-- `rate_limit:{userId}` - Message count per minute per user
-
-## Architecture
-
-The backend follows a modular architecture:
+## 📁 Project Structure
 
 ```
-src/
-├── index.ts          # Main server file
-├── routes/           # REST API routes
-│   └── rooms.ts      # Room-related endpoints
-├── socket/           # Socket.IO handlers
-│   └── socketHandlers.ts
-└── types/            # TypeScript interfaces
-    └── index.ts
+backend/
+├── src/
+│   ├── routes/              # REST API routes
+│   │   └── rooms.ts         # Room management endpoints
+│   ├── socket/              # Socket.IO handlers
+│   │   └── socketHandlers.ts # Real-time event handling
+│   ├── types/               # TypeScript definitions
+│   │   └── index.ts         # Shared type definitions
+│   └── index.ts             # Main server entry point
+├── prisma/
+│   └── schema.prisma        # Database schema definition
+├── .env                     # Environment variables (create this)
+├── package.json             # Dependencies and scripts
+├── tsconfig.json            # TypeScript configuration
+└── nodemon.json             # Development server config
 ```
 
-## Error Handling
+## 🛠️ Available Scripts
 
-The application includes comprehensive error handling:
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Build TypeScript to JavaScript |
+| `npm run start` | Start production server |
+| `npm run db:generate` | Generate Prisma client |
+| `npm run db:push` | Push schema changes to database |
+| `npm run db:migrate` | Run database migrations |
+| `npm run db:studio` | Open Prisma Studio (database GUI) |
 
-- **Database errors** - Graceful fallbacks and error messages
-- **Redis connection issues** - Automatic reconnection attempts
-- **Socket disconnections** - Cleanup and user removal
-- **Rate limiting** - Prevents message spam
-- **Input validation** - Sanitizes and validates all inputs
+## ⚡ Performance Features
 
-## Security Features
+- **Connection pooling** with Prisma for efficient database connections
+- **Redis caching** for frequently accessed data and sessions
+- **Rate limiting** to prevent spam and abuse
+- **Optimized database queries** with proper indexing
+- **Efficient WebSocket room management** for scalability
 
-- **Rate limiting** on message sending
-- **Input sanitization** and validation
-- **CORS configuration** for cross-origin requests
-- **Environment variable protection** for sensitive data
+## 🔒 Security Features
 
-## Performance Optimizations
+- **Environment variable protection** for sensitive configuration
+- **Input validation** on all endpoints and socket events
+- **Rate limiting** to prevent message flooding
+- **CORS configuration** for secure cross-origin requests
+- **SQL injection prevention** through Prisma ORM
+- **Error handling** without exposing internal details
 
-- **Redis caching** for frequently accessed data
-- **Database indexing** on commonly queried fields
-- **Connection pooling** with Prisma
-- **Efficient WebSocket room management**
+## 🐳 Docker Support
 
-## Contributing
+The backend works seamlessly with Docker. See the root `docker-compose.yml` for:
+- **Redis** container with persistence
+- **MySQL** container with proper configuration
+- **Environment variable** management
+- **Health checks** for service monitoring
+
+## 🔧 Development
+
+### Hot Reload Development
+```bash
+npm run dev
+```
+
+### Building for Production
+```bash
+npm run build
+npm run start
+```
+
+### Database Operations
+```bash
+# Reset database
+npm run db:push --force-reset
+
+# View data
+npm run db:studio
+```
+
+## 🚀 Deployment
+
+### Environment Variables for Production
+```env
+DATABASE_URL="mysql://user:pass@host:port/database"
+REDIS_URL="redis://user:pass@host:port"
+PORT=5000
+NODE_ENV=production
+JWT_SECRET=your-production-secret-key
+```
+
+### Build and Deploy
+```bash
+npm run build
+npm run start
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Database Connection Failed**
+```bash
+# Check MySQL is running
+mysql --version
+
+# Verify connection string
+npm run db:push
+```
+
+**Redis Connection Failed**
+```bash
+# Check Redis is running
+redis-cli ping
+
+# Should return: PONG
+```
+
+**TypeScript Errors**
+```bash
+# Regenerate Prisma client
+npm run db:generate
+
+# Clear node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+## 📊 Monitoring
+
+The backend includes comprehensive logging:
+- **Connection events** (user join/leave)
+- **Message events** (send/receive)
+- **Error events** (with stack traces)
+- **Performance metrics** (response times)
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Add tests if applicable
-5. Submit a pull request
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
-## License
+## 📄 License
 
 This project is licensed under the ISC License.
+
+---
+
+**Built with ❤️ using modern technologies for real-time communication**
